@@ -14,12 +14,19 @@ contract("SingleMessage", function(accounts) {
     assert.equal(await this.contract.owner(), accounts[0]);
   });
 
-  it("should allow the message to be set and double the price", async function() {
+  it("should allow the message to be set and double the price and emit an event", async function() {
     const price = (await this.contract.priceInWei()).toNumber();
     const newMessage = "new message!";
-    await this.contract.set(newMessage, {value: price});
+    const {logs} = await this.contract.set(newMessage, {value: price});
     assert.equal(await this.contract.message(), newMessage);
     assert.equal((await this.contract.priceInWei()).toNumber(), price * 2);
+
+    // Make sure the event was emitted properly
+    const event = logs.find(e => e.event === "MessageSet");
+    assert.equal(event.args.message, newMessage);
+    assert.equal(event.args.priceInWei, price);
+    assert.equal(event.args.newPriceInWei, price * 2);
+    assert.equal(event.args.payer, accounts[0]);
   });
 
   it("should not allow the message to be set if the price is not paid", async function() {
