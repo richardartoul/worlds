@@ -1,5 +1,5 @@
 module.exports = function(deployer, network, accounts) {
-  // Use deployer to state migration tasks.
+  deploy(deployer, accounts);
 };
 
 async function deploy(deployer, accounts) {
