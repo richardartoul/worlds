@@ -3,9 +3,10 @@ var SingleMessage = artifacts.require("SingleMessage");
 contract("SingleMessage", function(accounts) {
   const initialMessage = "hello world!";
   const initialPrice = 10;
+  const maxLength = 200;
 
   beforeEach(async function() {
-    this.contract = await SingleMessage.new(initialMessage, initialPrice);
+    this.contract = await SingleMessage.new(initialMessage, initialPrice, maxLength);
   });
 
   it("should have an initial value and price and owner", async function() {
@@ -41,6 +42,23 @@ contract("SingleMessage", function(accounts) {
       return;
     }
     throw 'Contract should have thrown, but did not!';
+  });
+
+  it("should not allow messages over maxLength", async function() {
+    const price = (await this.contract.priceInWei()).toNumber();
+    const maxLength = (await this.contract.maxLength()).toNumber();
+    var newMessage = "";
+    for (var i = 0; i < maxLength+1; i++) {
+      newMessage = newMessage + "a";
+    }
+    try {
+      await this.contract.set(newMessage, {value: price});      
+    } catch (error) {
+      assert.equal(true, error.message.search('invalid opcode') >= 0);
+      assert.equal(await this.contract.message(), initialMessage);
+      assert.equal((await this.contract.priceInWei()).toNumber(), price);
+      return
+    }
   });
 
   it("should allow the funds to be withdrawn if its the owner", async function() {
