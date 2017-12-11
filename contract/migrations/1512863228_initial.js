@@ -17,7 +17,7 @@ async function liveDeploy(deployer, accounts) {
     address: address
   });
 
-  return deployer.deploy(SingleMessage, initialMessage, initialPriceInWei, maxLength, address).then(async() => {
+  return deployer.deploy(SingleMessage, initialMessage, initialPriceInWei, maxLength).then(async() => {
     const contract = await SingleMessage.deployed();
     const message = await contract.message.call();
     const priceInWei = await contract.priceInWei.call();
