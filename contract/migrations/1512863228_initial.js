@@ -6,5 +6,5 @@ module.exports = function(deployer, network, accounts) {
 
 async function deploy(deployer, accounts) {
   const address = accounts[0];
-  await deployer.deploy(SingleMessage, "Hello world!", 1, address);
+  await deployer.deploy(SingleMessage, "Hello world!", 1, 200, address);
 }
