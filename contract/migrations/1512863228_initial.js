@@ -5,7 +5,6 @@ module.exports = function(deployer, network, accounts) {
 };
 
 async function liveDeploy(deployer, accounts) {
-  const address = accounts[0];
   const initialMessage = "Hello world!";
   const initialPriceInWei = 1;
   const maxLength = 200;
@@ -13,8 +12,7 @@ async function liveDeploy(deployer, accounts) {
   console.log("Contract arguments: ", {
     initialMessage: initialMessage,
     initialPriceInWei: initialPriceInWei,
-    maxLength: maxLength,
-    address: address
+    maxLength: maxLength
   });
 
   return deployer.deploy(SingleMessage, initialMessage, initialPriceInWei, maxLength).then(async() => {
