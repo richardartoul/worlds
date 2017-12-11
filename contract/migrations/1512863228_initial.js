@@ -1,10 +1,10 @@
 var SingleMessage = artifacts.require('../contracts/SingleMessage.sol');
 
 module.exports = function(deployer, network, accounts) {
-  deploy(deployer, accounts);
+  return liveDeploy(deployer, accounts);
 };
 
-async function deploy(deployer, accounts) {
+async function liveDeploy(deployer, accounts) {
   const address = accounts[0];
   const initialMessage = "Hello world!";
   const initialPriceInWei = 1;
