@@ -1,15 +1,20 @@
 package main
 
 import (
-	"crypto/worlds/server/state"
 	"fmt"
 	"log"
+	"os"
 	"time"
+
+	"crypto/worlds/server/state"
 )
 
 func main() {
-	// TODO: Config
-	stateManager := state.NewManager("http://localhost:8545", "0x8bc3ece9ec381ce2ee8d321c6c2393a59a0f5f0a", 5*time.Second)
+	// TODO: Config/Environment variables
+	connectionURL := os.Args[1]
+	contractAddress := os.Args[2]
+
+	stateManager := state.NewManager(connectionURL, contractAddress, 5*time.Second)
 	err := stateManager.Init()
 	if err != nil {
 		log.Fatalf("Err initializing state manager: %v", err)
