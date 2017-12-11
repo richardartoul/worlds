@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// TODO: Config
-	stateManager := state.NewManager("http://localhost:8545", "0xbcfc19ae6b67952fa75b10125458f63086e08ce6", 5*time.Second)
+	stateManager := state.NewManager("http://localhost:8545", "0x8bc3ece9ec381ce2ee8d321c6c2393a59a0f5f0a", 5*time.Second)
 	err := stateManager.Init()
 	if err != nil {
 		log.Fatalf("Err initializing state manager: %v", err)
