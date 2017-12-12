@@ -1,0 +1,10 @@
+[Unit]
+Description=Go server
+
+[Service]
+WorkingDirectory=/root/projects/src/crypto/worlds/server
+ExecStart=/root/projects/src/crypto/worlds/server/server 80 http://localhost:8545 0x6c273582e2f2f34dc0442eb00883397f18cb4a2e
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

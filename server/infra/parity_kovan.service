@@ -1,0 +1,10 @@
+[Unit]
+Description=Parity (Kovan Chain)
+
+[Service]
+WorkingDirectory=/root/parity-config
+ExecStart=/usr/local/bin/parity --chain kovan --unlock 0x4e1086e599178104e71a818a28320923402f5743 --password password.txt
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
