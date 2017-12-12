@@ -3,7 +3,7 @@ package state
 import (
 	"fmt"
 	"log"
-	"math/big"
+	"math"
 	"sync"
 	"time"
 
@@ -21,8 +21,9 @@ type Manager interface {
 
 // State represents the state of a SingleMessage contract
 type State struct {
-	Message string
-	Price   *big.Int
+	Message      string
+	PriceInWei   uint64
+	PriceInEther float64
 }
 
 // NewManager instantiates a new Manager
@@ -98,8 +99,9 @@ func (s *manager) updateState() error {
 
 	s.Lock()
 	s.state = State{
-		Message: message,
-		Price:   price,
+		Message:      message,
+		PriceInWei:   price.Uint64(),
+		PriceInEther: (float64(price.Uint64())) / math.Pow10(18),
 	}
 	s.Unlock()
 	return nil

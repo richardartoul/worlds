@@ -1,14 +1,89 @@
-<Head>
-</Head>
-<body>
-  <div>
-    Best person in the world: <div id="message">{{.Message}}</div>
-  </div>
-  <br>
-  <div>
-    Price to replace: <div id="price">{{.Price}}</div>
-  </div>
-  <button id="purchase">Purchase </button>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta property="og:height" content="630" />
+  <meta property="og:width" content="1200" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World's Greatest Human </title>
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <link href='https://fonts.googleapis.com/css?family=Exo+2:300,500,700' rel='stylesheet' type='text/css'>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+  <style>
+    .ml9 {
+      position: relative;
+      font-weight: 200;
+      font-size: 4em;
+    }
+
+    .ml9 .text-wrapper {
+      position: relative;
+      display: inline-block;
+      padding-top: 0.2em;
+      padding-right: 0.05em;
+      padding-bottom: 0.1em;
+      overflow: hidden;
+    }
+
+    .ml9 .letter {
+      transform-origin: 50% 100%;
+      display: inline-block;
+      line-height: 1em;
+    }
+  </style>
+</head>
+
+<body style='background-color:black;'>
+
+  <section class="brand">
+    <div class="container">
+      <div class="logo"></div>
+    </div>
+  </section>
+
+  <section class="header">
+    <div class="container">
+      <h1 class="ml9" align=center>
+        <span class="text-wrapper">
+            <span id="message" class="letters" style='color:white;'>{{.Message}}</span>
+        </span>
+      </h1>
+    </div>
+  </section>
+
+  <section class="footer">
+    <div class="container">
+      <div class="cta-text">
+        <p><a id="purchase" style='color:white;font-size:16px;text-decoration:underline;'>Become the World's Greatest for <span id="price">{{printf "%.18f" .PriceInEther}} </span> Eth</a></p>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/javascript">
+    $('.ml9 .letters').each(function () {
+      $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>"));
+    });
+
+    anime.timeline({ loop: true })
+      .add({
+        targets: '.ml9 .letter',
+        scale: [0, 1],
+        duration: 1500,
+        elasticity: 600,
+        delay: function (el, i) {
+          return 45 * (i + 1)
+        }
+      }).add({
+        targets: '.ml9',
+        opacity: 0,
+        duration: 1000,
+        easing: "easeOutExpo",
+        delay: 1000
+      });
+
+  </script>
   <script src="/static/web3.min.js"></script>
-  <script src="/static/test.js"></script>
+  <script src="/static/main.js"></script>
 </body>
+</html>

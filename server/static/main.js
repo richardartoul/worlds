@@ -188,7 +188,7 @@ function autoUpdate() {
       }
 
       document.getElementById("message").innerText = message;
-      document.getElementById("price").innerText = price;
+      document.getElementById("price").innerText = web3.fromWei(price, 'ether');
     });
   })
 }
