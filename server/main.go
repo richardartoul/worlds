@@ -23,7 +23,7 @@ func main() {
 		log.Fatalf("Err initializing state manager: %v", err)
 	}
 
-	landingPage, err := template.ParseFiles("templates/landing.html")
+	landingPage, err := template.ParseFiles("static/landing.html")
 	if err != nil {
 		log.Fatalf("Err parsiing landing page template: %v", err)
 	}
@@ -32,5 +32,7 @@ func main() {
 		landingPage.Execute(w, stateManager.Get())
 	}
 	http.HandleFunc("/", handler)
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static", fs))
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
