@@ -14,7 +14,7 @@ module.exports = {
     production: {
       host: "localhost",
       port: 8543,
-      networkd_id: "*",
+      network_id: "*",
       gas: 4700000
     }
   }
