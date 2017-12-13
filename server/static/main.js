@@ -174,7 +174,7 @@ var singleMessageABI = [
 ];
 
 var singleMessage = web3.eth.contract(singleMessageABI);
-var contract = singleMessage.at("0x6c273582e2f2f34dc0442eb00883397f18cb4a2e");
+var contract = singleMessage.at("0x15d3122103c5c17ed791fd5a3dba847ecfd6037e");
 
 function autoUpdate() {
   getPrice(function(error, price) {
