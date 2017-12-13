@@ -17,6 +17,12 @@ module.exports = {
       network_id: "1",
       gas: 4700000,
       from: "0x52ce8b05cc449f9bbb6b95c8b501e3d294869372"
+    },
+    infuraProduction: {
+      host: "https://mainnet.infura.io/<REDACTED_ACCESS_TOKEN>",
+      network_id: "1",
+      gas: 4700000,
+      from: "0x52ce8b05cc449f9bbb6b95c8b501e3d294869372"
     }
   }
 };
