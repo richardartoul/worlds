@@ -3,7 +3,7 @@ Description=Parity (Production Chain)
 
 [Service]
 WorkingDirectory=/root/parity-config
-ExecStart=/usr/local/bin/parity
+ExecStart=/usr/local/bin/parity --warp --ws-port 8544 --port 30304 --jsonrpc-port 8543
 Restart=always
 
 [Install]
