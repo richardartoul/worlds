@@ -17,7 +17,7 @@ type Config struct {
 // Get returns an instance of the configuration struct
 func Get() (Config, error) {
 	config := Config{}
-	configBytes, err := ioutil.ReadFile("./config.json")
+	configBytes, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
 		return config, err
 	}
