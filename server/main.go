@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"crypto/worlds/server/glide_sucks/crypto/acme/autocert"
 
 	"crypto/worlds/server/state"
 )
@@ -28,11 +29,19 @@ func main() {
 		log.Fatalf("Err parsiing landing page template: %v", err)
 	}
 
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		landingPage.Execute(w, stateManager.Get())
-	}
-	http.HandleFunc("/", handler)
+	})
+
 	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/static/", http.StripPrefix("/static", fs))
-	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	mux.Handle("/static/", http.StripPrefix("/static", fs))
+	log.Fatal(
+		http.Serve(
+			autocert.NewListener(
+				"worldsgreatesthuman.com", "biggestg.com",
+			),
+			mux,
+		),
+	)
 }
