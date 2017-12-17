@@ -27,41 +27,44 @@ type State struct {
 }
 
 // NewManager instantiates a new Manager
-func NewManager(connAddress, contractAddress string, pollFrequency time.Duration) Manager {
+func NewManager(connAddresses []string, contractAddress string, pollFrequency time.Duration) Manager {
 	return &manager{
 		RWMutex:         &sync.RWMutex{},
-		connAddress:     connAddress,
+		connAddresses:   connAddresses,
 		contractAddress: contractAddress,
 		pollFrequency:   pollFrequency,
+		conns:           []*ethclient.Client{},
+		contracts:       []*SingleMessage.SingleMessage{},
 	}
 }
 
 type manager struct {
 	*sync.RWMutex
-	connAddress     string
+	connAddresses   []string
 	contractAddress string
 	pollFrequency   time.Duration
-	conn            *ethclient.Client
-	contract        *SingleMessage.SingleMessage
+	conns           []*ethclient.Client
+	contracts       []*SingleMessage.SingleMessage
 	state           State
 }
 
 func (s *manager) Init() error {
-	conn, err := ethclient.Dial(s.connAddress)
-	if err != nil {
-		return fmt.Errorf("Failed to connect to the Ethereum client: %v\n", err)
+	for _, address := range s.connAddresses {
+		conn, err := ethclient.Dial(address)
+		if err != nil {
+			return fmt.Errorf("Failed to connect to the Ethereum client: %v\n", err)
+		}
+		contract, err := SingleMessage.NewSingleMessage(common.HexToAddress(s.contractAddress), conn)
+		if err != nil {
+			return fmt.Errorf("Failed instantiating contract: %v\n", err)
+		}
+		s.conns = append(s.conns, conn)
+		s.contracts = append(s.contracts, contract)
 	}
-	s.conn = conn
-
-	contract, err := SingleMessage.NewSingleMessage(common.HexToAddress(s.contractAddress), conn)
-	if err != nil {
-		return fmt.Errorf("Failed instantiating contract: %v\n", err)
-	}
-	s.contract = contract
 
 	// Fail fast if we can't fetch the contract details right off the bat. All subsequent
 	// failed contract details fetches will be log-only.
-	err = s.updateState()
+	err := s.updateState()
 	if err != nil {
 		return fmt.Errorf("Failed fetching initial contract state: %v\n", err)
 	}
@@ -88,21 +91,32 @@ func (s *manager) Get() State {
 }
 
 func (s *manager) updateState() error {
-	message, err := s.contract.Message(nil)
-	if err != nil {
-		return fmt.Errorf("Failed to retrieve message: %v\n", err)
-	}
-	price, err := s.contract.PriceInWei(nil)
-	if err != nil {
-		return fmt.Errorf("Failed to rerieve price: %v\n", err)
+	updatedSuccessfully := false
+	for _, contract := range s.contracts {
+		message, err := contract.Message(nil)
+		if err != nil {
+			log.Printf("Failed to retrieve message: %v\n", err)
+			continue
+		}
+		price, err := contract.PriceInWei(nil)
+		if err != nil {
+			log.Printf("Failed to rerieve price: %v\n", err)
+			continue
+		}
+
+		s.Lock()
+		s.state = State{
+			Message:      message,
+			PriceInWei:   price.Uint64(),
+			PriceInEther: (float64(price.Uint64())) / math.Pow10(18),
+		}
+		s.Unlock()
+		updatedSuccessfully = true
 	}
 
-	s.Lock()
-	s.state = State{
-		Message:      message,
-		PriceInWei:   price.Uint64(),
-		PriceInEther: (float64(price.Uint64())) / math.Pow10(18),
+	if !updatedSuccessfully {
+		return fmt.Errorf("Failed to update state from any of the available addresses: %v", s.connAddresses)
 	}
-	s.Unlock()
+
 	return nil
 }
