@@ -7,14 +7,14 @@ import (
 	"os"
 	"time"
 
-	"crypto/worlds/server/glide_sucks/crypto/acme/autocert"
+	"crypto/worlds/server/glide_sucks/xcrypto/acme/autocert"
 
 	"crypto/worlds/server/state"
 )
 
 func main() {
 	// TODO: Config/Environment variables
-	port := os.Args[1]
+	// port := os.Args[1]
 	connectionURL := os.Args[2]
 	contractAddress := os.Args[3]
 
