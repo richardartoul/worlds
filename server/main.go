@@ -19,7 +19,7 @@ func main() {
 		log.Fatalf("Err loading config: %v", err)
 	}
 
-	log.Infof("Starting server with config: %+v\n", config)
+	log.Printf("Starting server with config: %+v\n", config)
 
 	stateManager := state.NewManager(
 		config.EthereumClientAddresses,
