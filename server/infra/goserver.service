@@ -3,7 +3,7 @@ Description=Go server
 
 [Service]
 WorkingDirectory=/root/projects/src/crypto/worlds/server
-ExecStart=/root/projects/src/crypto/worlds/server/server 80 http://localhost:8543 0x15d3122103c5c17ed791fd5a3dba847ecfd6037e
+ExecStart=/root/projects/src/crypto/worlds/server/server
 Restart=always
 
 [Install]
