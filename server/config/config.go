@@ -10,7 +10,7 @@ type Config struct {
 	HTTPPort                    int      `json:"http_port"`
 	SSLDomains                  []string `json:"ssl_domains"`
 	EthereumClientAddresses     []string `json:"ethereum_client_addresses"`
-	EthereumContractAddress     string   `json:"ethereum_contract_addresses"`
+	EthereumContractAddress     string   `json:"ethereum_contract_address"`
 	StateRefreshIntervalSeconds int      `json:"state_refresh_interval_seconds"`
 }
 
