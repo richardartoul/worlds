@@ -48,7 +48,7 @@ func main() {
 		http.Redirect(w, r, target, http.StatusTemporaryRedirect)
 	})
 	go func() {
-		log.Fatal(http.ListenAndServe(fmt.Sprintf("localhost:%d", config.HTTPPort), sslRedirectMux))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.HTTPPort), sslRedirectMux))
 	}()
 
 	// Setup primary server for serving landing page over HTTPS
