@@ -2,6 +2,6 @@
   "http_port": 80,
   "ssl_domains": ["worldsgreathuman.com", "biggestg.com"],
   "ethereum_client_addresses": ["http://localhost:8543"],
-  "ethereum_contract_address": "0x15d3122103c5c17ed791fd5a3dba847ecfd6037e",
+  "ethereum_contract_address": "0x15d3122103c5C17ED791fd5A3DbA847ECFd6037e",
   "state_refresh_interval_seconds": 5
 }
