@@ -1,8 +1,8 @@
-//animation
 var currentAnime = null;
 var isMetamaskInstalled = false;
 var singleMessage = null;
 var contract = null;
+var web3 = null;
 
 $(document).ready(function() {
   restartAnimation();
@@ -10,11 +10,11 @@ $(document).ready(function() {
   if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider);
     isMetamaskInstalled = true;
+    singleMessage = web3.eth.contract(singleMessageABI);
+    contract = singleMessage.at("0x15d3122103c5c17ed791fd5a3dba847ecfd6037e");
+    window.setInterval(autoUpdate, 5000);
   }
 
-  singleMessage = web3.eth.contract(singleMessageABI);
-  contract = singleMessage.at("0x15d3122103c5c17ed791fd5a3dba847ecfd6037e");
-  window.setInterval(autoUpdate, 5000);
   document.getElementById("purchase").addEventListener("click", onClickPurchase);  
 });
 
