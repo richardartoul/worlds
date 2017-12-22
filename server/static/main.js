@@ -2,7 +2,6 @@ var currentAnime = null;
 var isMetamaskInstalled = false;
 var singleMessage = null;
 var contract = null;
-var web3 = null;
 
 $(document).ready(function() {
   restartAnimation();
@@ -270,8 +269,9 @@ function purchase(newMessage, price, cb) {
 
 function onClickPurchase(cb) {
   if (!isMetamaskInstalled) {
-    alert("You need Metamask to become the Biggest G, click the link below to get it.")
+    return alert("You need Metamask to become the Biggest G, click the link below to get it.");
   }
+
   getBalance(function (error, balance) {
     if (error) {
       return handleError(error);
@@ -295,7 +295,7 @@ function onClickPurchase(cb) {
           return handleError(error);
         }
 
-        alert("Success! If your transaction succeeds the page will update shortly!");
+        return alert("Success! If your transaction succeeds the page will update shortly!");
       });
     });
   });
