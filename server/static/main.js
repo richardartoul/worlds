@@ -1,8 +1,44 @@
-if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider);
-} else {
-  // set the provider you want from Web3.providers
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+//animation
+var currentAnime = null;
+var isMetamaskInstalled = false;
+var singleMessage = null;
+var contract = null;
+
+$(document).ready(function() {
+  restartAnimation();
+
+  if (typeof web3 !== 'undefined') {
+    web3 = new Web3(web3.currentProvider);
+    isMetamaskInstalled = true;
+  }
+
+  singleMessage = web3.eth.contract(singleMessageABI);
+  contract = singleMessage.at("0x15d3122103c5c17ed791fd5a3dba847ecfd6037e");
+  window.setInterval(autoUpdate, 5000);
+  document.getElementById("purchase").addEventListener("click", onClickPurchase);  
+});
+
+function restartAnimation() {
+  $('.ml9 .letters').each(function () {
+    $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>"));
+  });
+
+  currentAnime = anime.timeline({ loop: true })
+    .add({
+      targets: '.ml9 .letter',
+      scale: [0, 1],
+      duration: 1500,
+      elasticity: 600,
+      delay: function (el, i) {
+        return 45 * (i + 1)
+      }
+    }).add({
+      targets: '.ml9',
+      opacity: 0,
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 1000
+    });
 }
 
 var singleMessageABI = [
@@ -173,9 +209,6 @@ var singleMessageABI = [
   }
 ];
 
-var singleMessage = web3.eth.contract(singleMessageABI);
-var contract = singleMessage.at("0x15d3122103c5c17ed791fd5a3dba847ecfd6037e");
-
 function autoUpdate() {
   getPrice(function(error, price) {
     if (error) {
@@ -187,13 +220,22 @@ function autoUpdate() {
         return handleErrorSilent(error);
       }
 
-      document.getElementById("message").innerText = message;
+      var currentMessage = document.getElementById("message").innerText;
+      if (currentMessage !== message) {
+        document.getElementById("message").innerText = message;        
+        // Wrap each letter in a span again
+        $('.ml9 .letters').each(function () {
+          $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>"));
+        });
+        if (currentAnime) {
+          currentAnime.pause();
+        }
+        restartAnimation();
+      }
       document.getElementById("price").innerText = web3.fromWei(price, 'ether');
     });
-  })
+  });
 }
-
-window.setInterval(autoUpdate, 5000);
 
 function getBalance(cb) {
   web3.eth.getBalance(web3.eth.coinbase, function(error, balance) {
@@ -227,6 +269,9 @@ function purchase(newMessage, price, cb) {
 }
 
 function onClickPurchase(cb) {
+  if (!isMetamaskInstalled) {
+    alert("You need Metamask to become the Biggest G, click the link below to get it.")
+  }
   getBalance(function (error, balance) {
     if (error) {
       return handleError(error);
@@ -237,7 +282,7 @@ function onClickPurchase(cb) {
       }
       
       if (balance < price) {
-        return alert("Sorry peasant, you can't afford to update this message!");
+        return alert("Sorry, you're not ballin' enough to become the Biggest G (need more Ether)");
       }
 
       var newMessage = window.prompt("What would you like to change the message to?");
@@ -255,8 +300,6 @@ function onClickPurchase(cb) {
     });
   });
 }
-
-document.getElementById("purchase").addEventListener("click", onClickPurchase);
 
 function handleError(error) {
   console.log(error);

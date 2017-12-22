@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Biggest G</title>  
+  <title>Biggest G</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Biggest G. is an Ethereum DApp where user's can pay to become the Biggest G.">
@@ -17,32 +18,12 @@
   <meta name="twitter:description" content="Become the Biggest G!">
   <meta name="twitter:title" content="Biggest G">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-  <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <link href='https://fonts.googleapis.com/css?family=Exo+2:300,500,700' rel='stylesheet' type='text/css'>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
-  <style>
-    .ml9 {
-      position: relative;
-      font-weight: 200;
-      font-size: 4em;
-    }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemodal/1.4.4/jquery.simplemodal.min.js"></script>
 
-    .ml9 .text-wrapper {
-      position: relative;
-      display: inline-block;
-      padding-top: 0.2em;
-      padding-right: 0.05em;
-      padding-bottom: 0.1em;
-      overflow: hidden;
-    }
-
-    .ml9 .letter {
-      transform-origin: 50% 100%;
-      display: inline-block;
-      line-height: 1em;
-    }
-  </style>
 </head>
 
 <body style='background-color:black;'>
@@ -53,48 +34,58 @@
     </div>
   </section>
 
-  <section class="header">
-    <div class="container">
-      <h1 class="ml9" align=center>
+  <section class="header" style='color:white;'>
+    <div class="container" align="center">
+      <div class="ml9 main-text">
         <span class="text-wrapper">
-            <span id="message" class="letters" style='color:white;'>{{.Message}}</span>
+          <span class="letters" id="message">
+            {{.Message}}
+          </span>
         </span>
-      </h1>
+      </div>
+      <div id="sub-message">
+        is the Biggest G
+      </div>
     </div>
   </section>
 
   <section class="footer">
     <div class="container">
       <div class="cta-text">
-        <p><a id="purchase" style='color:white;font-size:16px;text-decoration:underline;'>Become the World's Greatest for <span id="price">{{printf "%.18f" .PriceInEther}} </span> Eth</a></p>
+        <div>
+          <a id="purchase" href="#">
+              Become The Biggest G
+              <i></i>
+          </a>
+        </div>
+        <div class="small-info-box">
+          Price: <span id="price">{{.price}}</span> Ether
+        </div>
+        <br>
+        <div class="small-info-box">
+              0x15d3122103c5c17ed791fd5a3dba847ecfd6037e
+        </div>
+        </div>
+          <span class="small-link"><a href="https://github.com/richardartoul/worlds">Github</a></span>
+          <span class="small-link"><a href="https://etherscan.io/address/0x15d3122103c5c17ed791fd5a3dba847ecfd6037e">Kovan</a></span>
+          <span class="small-link"><a href="">Blog Post</a></span>
+          <span class="small-link"><a href="http://freemusicarchive.org/music/The_Good_Lawdz/A_Lil_Sumthin_Sumthin/The_Good_Lawdz_-_A_Lil_Sumthin_Sumthin_-_01_A_Lil_Somethin_Somethin">Music</a></span>
+          <span class="small-link"><a href="https://metamask.io/">Metamask</a></span>
+        </div>
+        <p class="explanation">
+          Biggest G is an Ethereum smart contract that keeps track of the Biggest G. You can become the Biggest G if you're willing to pay the price, but beware, you'll only be the biggest until someone else spends twice as much.
+        </p>
       </div>
     </div>
+
   </section>
 
-  <script type="text/javascript">
-    $('.ml9 .letters').each(function () {
-      $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>"));
-    });
-
-    anime.timeline({ loop: true })
-      .add({
-        targets: '.ml9 .letter',
-        scale: [0, 1],
-        duration: 1500,
-        elasticity: 600,
-        delay: function (el, i) {
-          return 45 * (i + 1)
-        }
-      }).add({
-        targets: '.ml9',
-        opacity: 0,
-        duration: 1000,
-        easing: "easeOutExpo",
-        delay: 1000
-      });
-
-  </script>
   <script src="/static/web3.min.js"></script>
   <script src="/static/main.js"></script>
+  <br>
+  <audio controls autoplay class="music">
+    <source src="/static/song.mp3" type="audio/mp3">
+  </audio>
 </body>
+
 </html>
