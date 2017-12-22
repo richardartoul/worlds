@@ -269,7 +269,7 @@ function purchase(newMessage, price, cb) {
 
 function onClickPurchase(cb) {
   if (!isMetamaskInstalled) {
-    return alert("You need Metamask to become the Biggest G, click the link below to get it.");
+    return alert("You need Metamask to become the Biggest G, click the link below to get it (desktop only).");
   }
 
   getBalance(function (error, balance) {
