@@ -285,7 +285,7 @@ function onClickPurchase(cb) {
         return alert("Sorry, you're not ballin' enough to become the Biggest G (need more Ether)");
       }
 
-      var newMessage = window.prompt("What would you like to change the message to?");
+      var newMessage = window.prompt("Who's the Biggest G?");
       if (!newMessage) {
         return alert("Sorry, you have to type in something!");
       }
