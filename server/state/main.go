@@ -164,11 +164,14 @@ func (s *manager) updateEthPriceState() error {
 	if err != nil {
 		return err
 	}
-	ethPriceUSDResp := &ethereumCoinMarketCapResponse{}
+	ethPriceUSDResp := []*ethereumCoinMarketCapResponse{}
 	json.Unmarshal(jsonBytes, ethPriceUSDResp)
-	ethPriceUSD, err := strconv.ParseFloat(ethPriceUSDResp.PriceUSD, 64)
+	if len(ethPriceUSDResp) != 1 {
+		return fmt.Errorf("Received invalid JSON payload: %s", string(jsonBytes))
+	}
+	ethPriceUSD, err := strconv.ParseFloat(ethPriceUSDResp[0].PriceUSD, 64)
 	if err != nil {
-		return err
+		return fmt.Errorf("Received invalid JSON payload: %s, unable to parseFloat: %v", string(jsonBytes), err)
 	}
 
 	s.Lock()
