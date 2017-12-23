@@ -1,9 +1,14 @@
 package state
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"math"
+	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -24,6 +29,11 @@ type State struct {
 	Message      string
 	PriceInWei   uint64
 	PriceInEther float64
+	EthPriceUSD  float64
+}
+
+type ethereumCoinMarketCapResponse struct {
+	PriceUSD string `json:"price_usd"`
 }
 
 // NewManager instantiates a new Manager
@@ -35,6 +45,10 @@ func NewManager(connAddresses []string, contractAddress string, pollFrequency ti
 		pollFrequency:   pollFrequency,
 		conns:           []*ethclient.Client{},
 		contracts:       []*SingleMessage.SingleMessage{},
+		httpClient: &http.Client{
+			// TODO: Config
+			Timeout: 5 * time.Second,
+		},
 	}
 }
 
@@ -46,6 +60,7 @@ type manager struct {
 	conns           []*ethclient.Client
 	contracts       []*SingleMessage.SingleMessage
 	state           State
+	httpClient      *http.Client
 }
 
 func (s *manager) Init() error {
@@ -64,18 +79,35 @@ func (s *manager) Init() error {
 
 	// Fail fast if we can't fetch the contract details right off the bat. All subsequent
 	// failed contract details fetches will be log-only.
-	err := s.updateState()
+	err := s.updateContractState()
 	if err != nil {
 		return fmt.Errorf("Failed fetching initial contract state: %v\n", err)
 	}
+	err = s.updateEthPriceState()
+	if err != nil {
+		return fmt.Errorf("Failed fetching ethereum price in USD: %v\n", err)
+	}
 
+	// Background goroutine to keep contract state up to date
 	go func() {
 		for {
-			err := s.updateState()
+			err := s.updateContractState()
 			if err != nil {
-				log.Printf("Error updating state: %v\n", err)
+				log.Printf("Error updating contract state: %v\n", err)
 			}
 			time.Sleep(s.pollFrequency)
+		}
+	}()
+
+	// Background goroutine to keep ethereum price up to date
+	go func() {
+		for {
+			err = s.updateEthPriceState()
+			if err != nil {
+				log.Printf("Error updating ethereum price state: %v\n", err)
+			}
+			// TODO: Make separate config
+			time.Sleep(12 * s.pollFrequency)
 		}
 	}()
 
@@ -90,7 +122,7 @@ func (s *manager) Get() State {
 	return state
 }
 
-func (s *manager) updateState() error {
+func (s *manager) updateContractState() error {
 	updatedSuccessfully := false
 	for _, contract := range s.contracts {
 		message, err := contract.Message(nil)
@@ -112,11 +144,36 @@ func (s *manager) updateState() error {
 		}
 		s.Unlock()
 		updatedSuccessfully = true
+		// If we made it this far, there is no need to look at the other sources of data
+		break
 	}
 
 	if !updatedSuccessfully {
 		return fmt.Errorf("Failed to update state from any of the available addresses: %v", s.connAddresses)
 	}
+
+	return nil
+}
+
+func (s *manager) updateEthPriceState() error {
+	resp, err := s.httpClient.Get("https://api.coinmarketcap.com/v1/ticker/ethereum/")
+	if err != nil {
+		return err
+	}
+	jsonBytes, err := ioutil.ReadAll(io.LimitReader(resp.Body, 1049000))
+	if err != nil {
+		return err
+	}
+	ethPriceUSDResp := &ethereumCoinMarketCapResponse{}
+	json.Unmarshal(jsonBytes, ethPriceUSDResp)
+	ethPriceUSD, err := strconv.ParseFloat(ethPriceUSDResp.PriceUSD, 64)
+	if err != nil {
+		return err
+	}
+
+	s.Lock()
+	s.state.EthPriceUSD = ethPriceUSD
+	s.Unlock()
 
 	return nil
 }
