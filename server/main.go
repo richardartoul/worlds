@@ -32,7 +32,7 @@ func main() {
 	}
 
 	landingPage, err := template.New("landing.html").
-		Funcs(template.FuncMap{"multiply": func(a, b int64) int64 { return a * b }}).
+		Funcs(template.FuncMap{"multiply": func(a, b float64) float64 { return a * b }}).
 		ParseFiles("static/landing.html")
 	if err != nil {
 		log.Fatalf("Err parsing landing page template: %v", err)
