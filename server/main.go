@@ -31,7 +31,7 @@ func main() {
 		log.Fatalf("Err initializing state manager: %v", err)
 	}
 
-	landingPage, err := template.New("").
+	landingPage, err := template.New("landing").
 		Funcs(template.FuncMap{"multiply": func(a, b int64) int64 { return a * b }}).
 		ParseFiles("static/landing.html")
 	if err != nil {
@@ -56,7 +56,7 @@ func main() {
 	// Setup primary server for serving landing page over HTTPS
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		err := landingPage.Execute(w, stateManager.Get())
+		err := landingPage.ExecuteTemplate(w, "landing", stateManager.Get())
 		if err != nil {
 			log.Printf("Err executing landing page template: %v", err)
 		}
