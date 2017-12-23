@@ -35,7 +35,7 @@ func main() {
 		Funcs(template.FuncMap{"multiply": func(a, b int64) int64 { return a * b }}).
 		ParseFiles("static/landing.html")
 	if err != nil {
-		log.Fatalf("Err parsiing landing page template: %v", err)
+		log.Fatalf("Err parsing landing page template: %v", err)
 	}
 
 	// Setup background server to redirect http --> https
