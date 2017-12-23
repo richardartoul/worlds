@@ -56,7 +56,10 @@ func main() {
 	// Setup primary server for serving landing page over HTTPS
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		landingPage.Execute(w, stateManager.Get())
+		err := landingPage.Execute(w, stateManager.Get())
+		if err != nil {
+			log.Printf("Err executing landing page template: %v", err)
+		}
 	})
 
 	fs := http.FileServer(http.Dir("./static"))
