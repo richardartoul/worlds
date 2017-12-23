@@ -164,8 +164,8 @@ func (s *manager) updateEthPriceState() error {
 	if err != nil {
 		return err
 	}
-	ethPriceUSDResp := []*ethereumCoinMarketCapResponse{}
-	json.Unmarshal(jsonBytes, ethPriceUSDResp)
+	ethPriceUSDResp := make([]*ethereumCoinMarketCapResponse, 0, 1)
+	json.Unmarshal(jsonBytes, &ethPriceUSDResp)
 	if len(ethPriceUSDResp) != 1 {
 		return fmt.Errorf("Received invalid JSON payload: %s", string(jsonBytes))
 	}
