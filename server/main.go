@@ -31,7 +31,7 @@ func main() {
 		log.Fatalf("Err initializing state manager: %v", err)
 	}
 
-	landingPage, err := template.New("landing").
+	landingPage, err := template.New("").
 		Funcs(template.FuncMap{"multiply": func(a, b int64) int64 { return a * b }}).
 		ParseFiles("static/landing.html")
 	if err != nil {
