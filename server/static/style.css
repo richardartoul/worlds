@@ -19,6 +19,13 @@ body {
 	padding-top: 50px;
 }
 
+#metamask-tip {
+	margin: auto;
+	margin-bottom: 25px;
+	font-style: italic; 
+	max-width: 400px;
+}
+
 .container {
 	padding-left: 25px;
 	padding-right: 25px;
@@ -376,7 +383,7 @@ body {
 	color: #FAFAFA;
 	border: 3px solid #FAFAFA;
 	padding: 25px;
-	margin-bottom: 25px;
+	margin-bottom: 10px;
   
 	/*  centering */
 	text-align: center;
