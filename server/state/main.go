@@ -146,11 +146,9 @@ func (s *manager) updateContractState() error {
 		}
 
 		s.Lock()
-		s.state = State{
-			Message:      message,
-			PriceInWei:   price.Uint64(),
-			PriceInEther: (float64(price.Uint64())) / math.Pow10(18),
-		}
+		s.state.Message = message
+		s.state.PriceInWei = price.Uint64()
+		s.state.PriceInEther = (float64(price.Uint64())) / math.Pow10(18)
 		s.Unlock()
 		updatedSuccessfully = true
 		// If we made it this far, there is no need to look at the other sources of data
