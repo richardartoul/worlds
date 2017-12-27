@@ -111,6 +111,15 @@ func (s *manager) Init() error {
 		}
 	}()
 
+	// Background goroutine to print out state every once in a while for debugging
+	go func() {
+		for {
+			log.Printf("Current state: %+v\n", s.Get())
+			// TODO: Config
+			time.Sleep(1 * time.Minute)
+		}
+	}()
+
 	return nil
 }
 
